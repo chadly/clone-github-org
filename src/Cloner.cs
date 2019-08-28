@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using LibGit2Sharp;
 
 namespace CloneOrg
 {
@@ -22,7 +24,11 @@ namespace CloneOrg
 
 			foreach (var repo in repos)
 			{
-				Console.WriteLine(repo.FullName);
+				Console.WriteLine($"Cloning {repo.FullName}...");
+				Repository.Clone($"https://github.com/{repo.FullName}.git", Path.Combine(Directory.GetCurrentDirectory(), repo.Name));
+				Console.WriteLine("Done");
+
+				Console.WriteLine();
 			}
 		}
 	}

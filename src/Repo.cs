@@ -5,7 +5,7 @@ namespace CloneOrg
 	/// <summary>
 	/// https://developer.github.com/v3/activity/events/types/#pullrequestevent
 	/// </summary>
-	public class Repository
+	public class Repo
 	{
 		public int Id { get; set; }
 

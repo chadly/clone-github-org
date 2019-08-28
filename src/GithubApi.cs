@@ -18,9 +18,9 @@ namespace CloneOrg
 			this.client = client;
 		}
 
-		public Task<IEnumerable<Repository>> GetReposForOrg(string org, string type = "all")
+		public Task<IEnumerable<Repo>> GetReposForOrg(string org, string type = "all")
 		{
-			return AggregatePaginatedResponse<Repository>($"/orgs/{org}/repos?type={type}&per_page=100");
+			return AggregatePaginatedResponse<Repo>($"/orgs/{org}/repos?type={type}&per_page=100");
 		}
 
 		async Task<IEnumerable<T>> AggregatePaginatedResponse<T>(string url)
