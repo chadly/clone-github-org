@@ -9,12 +9,12 @@ namespace CloneOrg
 	public class Cloner
 	{
 		readonly GithubApi api;
-		readonly UsernamePasswordCredentials credentials;
+		readonly Options opts;
 
-		public Cloner(GithubApi api, UsernamePasswordCredentials credentials)
+		public Cloner(GithubApi api, Options opts)
 		{
 			this.api = api;
-			this.credentials = credentials;
+			this.opts = opts;
 		}
 
 		public async Task CloneReposForOrg(string org)
@@ -30,7 +30,17 @@ namespace CloneOrg
 
 				Repository.Clone($"https://github.com/{repo.FullName}.git", Path.Combine(Directory.GetCurrentDirectory(), repo.Name), new CloneOptions
 				{
-					CredentialsProvider = (url, user, cred) => credentials
+					CredentialsProvider = (url, user, cred) =>
+					{
+						if (String.IsNullOrWhiteSpace(opts.Username) || String.IsNullOrWhiteSpace(opts.Password))
+							return null;
+
+						return new UsernamePasswordCredentials
+						{
+							Username = opts.Username,
+							Password = opts.Password
+						};
+					}
 				});
 				Console.WriteLine("Done");
 

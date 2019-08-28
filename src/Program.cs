@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using LibGit2Sharp;
+using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CloneOrg
@@ -10,14 +10,20 @@ namespace CloneOrg
 	{
 		static async Task Main(string[] args)
 		{
-			var serviceProvider = BuildServiceProvider(args[0]);
+			Options opts = null;
+
+			Parser.Default.ParseArguments<Options>(args)
+				.WithParsed(o => opts = o)
+				.WithNotParsed(errs => Environment.Exit(1));
+
+			var serviceProvider = BuildServiceProvider(opts);
 
 			var cloner = serviceProvider.GetRequiredService<Cloner>();
 
-			await cloner.CloneReposForOrg(args[1]);
+			await cloner.CloneReposForOrg(opts.Org);
 		}
 
-		static IServiceProvider BuildServiceProvider(string apiKey)
+		static IServiceProvider BuildServiceProvider(Options opts)
 		{
 			var services = new ServiceCollection();
 
@@ -25,15 +31,16 @@ namespace CloneOrg
 			{
 				client.BaseAddress = new Uri("https://api.github.com");
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
-				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", apiKey);
+
+				if (!String.IsNullOrWhiteSpace(opts.Password))
+				{
+					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", opts.Password);
+				}
+
 				client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CloneOrg", "v1"));
 			});
 
-			services.AddSingleton(new UsernamePasswordCredentials
-			{
-				Username = "chadly",
-				Password = apiKey
-			});
+			services.AddSingleton(opts);
 
 			services.AddSingleton<Cloner>();
 
