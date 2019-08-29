@@ -8,7 +8,7 @@
     <Title>Clone Github Org</Title>
     <Description>A .net CLI utility to clone all repositories in a Github org.</Description>
     <Authors>chadly</Authors>
-    <PackageTags>clone;github;git;organization</PackageTags>
+    <PackageTags>clone;github;git;organization;cli</PackageTags>
 
     <Version>1.0.0</Version>
 
