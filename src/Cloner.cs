@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 
-namespace CloneOrg
+namespace CloneGithubOrg
 {
 	public class Cloner
 	{

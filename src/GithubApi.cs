@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Archon.Http;
 using Newtonsoft.Json;
 
-namespace CloneOrg
+namespace CloneGithubOrg
 {
 	public class GithubApi
 	{

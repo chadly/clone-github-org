@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CloneOrg
+namespace CloneGithubOrg
 {
 	class Program
 	{
@@ -37,7 +38,12 @@ namespace CloneOrg
 					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", opts.Password);
 				}
 
-				client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CloneOrg", "v1"));
+				string versionString = Assembly.GetEntryAssembly()
+					.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+					.InformationalVersion
+					.ToString();
+
+				client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CloneOrg", versionString));
 			});
 
 			services.AddSingleton(opts);

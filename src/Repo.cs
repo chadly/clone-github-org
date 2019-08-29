@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace CloneOrg
+namespace CloneGithubOrg
 {
 	/// <summary>
 	/// https://developer.github.com/v3/activity/events/types/#pullrequestevent
