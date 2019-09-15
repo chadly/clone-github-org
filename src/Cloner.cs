@@ -1,8 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using LibGit2Sharp;
 
 namespace CloneGithubOrg
 {
@@ -28,24 +28,39 @@ namespace CloneGithubOrg
 			{
 				Console.WriteLine($"Cloning {repo.FullName}...");
 
-				Repository.Clone($"https://github.com/{repo.FullName}.git", Path.Combine(Directory.GetCurrentDirectory(), repo.Name), new CloneOptions
-				{
-					CredentialsProvider = (url, user, cred) =>
-					{
-						if (String.IsNullOrWhiteSpace(opts.Username) || String.IsNullOrWhiteSpace(opts.Password))
-							return null;
+				var process = new Process();
+				process.StartInfo.FileName = "git";
+				process.StartInfo.Arguments = $"clone {RepoArgs(repo.FullName)}";
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.UseShellExecute = false;
 
-						return new UsernamePasswordCredentials
-						{
-							Username = opts.Username,
-							Password = opts.Password
-						};
-					}
-				});
+				process.StartInfo.RedirectStandardOutput = true;
+				process.OutputDataReceived += (sender, data) =>
+				{
+					Console.WriteLine(data.Data);
+				};
+
+				process.StartInfo.RedirectStandardError = true;
+				process.ErrorDataReceived += (sender, data) =>
+				{
+					Console.WriteLine(data.Data);
+				};
+
+				process.Start();
+
 				Console.WriteLine("Done");
 
 				Console.WriteLine();
 			}
+		}
+
+		string RepoArgs(string repo)
+		{
+			string auth = !String.IsNullOrWhiteSpace(opts.Username) && !String.IsNullOrWhiteSpace(opts.Password)
+				? $"{opts.Username}:{opts.Password}@" : null;
+
+			return $"https://{auth}github.com/{repo}.git";
+
 		}
 	}
 }
