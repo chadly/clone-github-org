@@ -47,6 +47,7 @@ namespace CloneGithubOrg
 				};
 
 				process.Start();
+				process.WaitForExit();
 
 				Console.WriteLine("Done");
 
